@@ -6,14 +6,14 @@ public class QuestionNode : Node
 {
     public Node trueNode;
     public Node falseNode;
-    public ThieftState state;
+    public TypeAction state;
 
     public override void Execute(Pj npc)
     {
 
         switch(state)
         {
-            case ThieftState.Steal:
+            case TypeAction.Steal:
                 if (npc.enemy.steal)
                     trueNode.Execute(npc);
                 else 
@@ -24,7 +24,7 @@ public class QuestionNode : Node
     }
 }
 
-public enum ThieftState
+public enum TypeAction
 {
     Steal,
     dist,
