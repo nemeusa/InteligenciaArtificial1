@@ -8,15 +8,19 @@ public class FSM<T>
 
     Istate _CurrentState;
 
+    private T _currentKey;
+    public T CurrentStateKey => _currentKey;
+
     public void AddState(T newState, Istate state)
     {
-        if (!_states.ContainsKey(newState)) _states.Add(newState, state);
+        if (_states.ContainsKey(newState)) return;
+
+        _states.Add(newState, state);
     }
 
     public void Execute()
     {
-        if (_CurrentState != null) _CurrentState.OnUpdate();
-        _CurrentState.OnColor();
+        if (_CurrentState != null) _CurrentState.OnUpdate();    
     }
     public void ChangeState(T newState)
     {
@@ -26,6 +30,7 @@ public class FSM<T>
 
         if (_CurrentState != null) _CurrentState.OnExit();
 
+        _currentKey = newState;
         _CurrentState = _states[newState];
 
         _CurrentState.OnEnter();

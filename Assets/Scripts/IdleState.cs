@@ -14,11 +14,6 @@ public class IdleState : Istate
         _fsm = fsm;
     }
 
-
-    void Awake()
-    {
-
-    }
     public void OnEnter()
     {
         Debug.Log("Enter to Idle");
@@ -32,11 +27,5 @@ public class IdleState : Istate
     public void OnExit()
     {
         Debug.Log("Exit to Idle");
-    }
-
-    public void OnColor()
-    {
-        Color _color = Color.blue;
-        _hunter.GetComponent<Renderer>().material.color = _color;
     }
 }

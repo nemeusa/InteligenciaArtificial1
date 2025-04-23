@@ -15,9 +15,4 @@ public class MoveState : Istate
     {
         Debug.Log("Exit to Move");
     }
-
-    public void OnColor()
-    {
-        Color _color = Color.red;
-    }
 }
