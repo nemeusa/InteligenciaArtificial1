@@ -13,9 +13,7 @@ public class FSM<T>
 
     public void AddState(T newState, Istate state)
     {
-        if (_states.ContainsKey(newState)) return;
-
-        _states.Add(newState, state);
+        if (!_states.ContainsKey(newState)) _states.Add(newState, state);
     }
 
     public void Execute()
