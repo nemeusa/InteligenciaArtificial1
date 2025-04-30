@@ -18,6 +18,9 @@ public class MoveState : Istate
     }
     public void OnUpdate()
     {
+        //PERSUIT
+        if (_hunter.visibleBoids.Count > 0) _fsm.ChangeState(TypeFSM.Pursuit);
+
         //MOVEMENT
         List<Boid> visibleBoids = _hunter.GetVisibleBoids();
 

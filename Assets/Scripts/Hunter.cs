@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCounters;
 public class Hunter : MonoBehaviour
 {
     FSM<TypeFSM> _fsm;
@@ -21,8 +22,10 @@ public class Hunter : MonoBehaviour
     public float nodeArrivalThreshold = 0.5f;
 
     [Header ("Pursuit")]
+    [HideInInspector] public List<Boid> visibleBoids = new();
     [SerializeField] float viewRadius;
     [SerializeField] float viewAngle;
+    public bool isPursuit;
 
     void Awake()
     {
@@ -38,6 +41,7 @@ public class Hunter : MonoBehaviour
     void Update()
     {
         _fsm.Execute();
+        UpdateVision();
     }
 
     public List<Boid> GetVisibleBoids()
@@ -61,6 +65,26 @@ public class Hunter : MonoBehaviour
         }
 
         return visibleBoids;
+    }
+
+    public void UpdateVision()
+    {
+        visibleBoids.Clear();
+
+        foreach (Boid boid in GameManager.instance.boids)
+        {
+            Vector3 dirToBoid = boid.transform.position - transform.position;
+            float distance = dirToBoid.magnitude;
+
+            if (distance <= viewRadius)
+            {
+                float angle = Vector3.Angle(transform.forward, dirToBoid);
+                if (angle <= viewAngle / 2f)
+                {
+                    visibleBoids.Add(boid);
+                }
+            }
+        }
     }
 
     void OnDrawGizmosSelected()
