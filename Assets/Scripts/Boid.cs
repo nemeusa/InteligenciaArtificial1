@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
 
 public class Boid : MonoBehaviour
 {
@@ -78,8 +77,7 @@ public class Boid : MonoBehaviour
             desired += item.Velocity;
         }
 
-        if (desired == Vector3.zero)
-            return desired;
+        if (desired == Vector3.zero) return desired;
 
         desired.Normalize();
         desired *= _maxVelocity;
@@ -122,11 +120,6 @@ public class Boid : MonoBehaviour
         var dir = hunter.transform.position + hunter._velocity;
         return Flee(dir);
     }
-    public void AddForce(Vector3 dir)
-    {
-        _velocity = Vector3.ClampMagnitude(_velocity + dir, _maxVelocity);
-        transform.forward = _velocity;
-    }
 
 
     public Vector3 Flee(Vector3 hunter)
@@ -146,6 +139,11 @@ public class Boid : MonoBehaviour
     }
     #endregion
 
+    public void AddForce(Vector3 dir)
+    {
+        _velocity = Vector3.ClampMagnitude(_velocity + dir, _maxVelocity);
+        transform.forward = _velocity;
+    }
 
     private void OnDrawGizmos()
     {

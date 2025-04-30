@@ -21,9 +21,9 @@ public class IdleState : Istate
         //if (Input.GetKeyDown(KeyCode.Space)) _fsm.ChangeState(TypeFSM.Move);
         if (_hunter.currentEnergy == _hunter.maxEnergy)
         {
-            _fsm.ChangeState(TypeFSM.Move);
+            _fsm.ChangeState(TypeFSM.Pursuit);
         }
-        _hunter.currentEnergy += _hunter.energyRecoveryRate * Time.deltaTime;
+        _hunter.currentEnergy += _hunter.energyRecovery * Time.deltaTime;
         _hunter.currentEnergy = Mathf.Clamp(_hunter.currentEnergy, 0f, _hunter.maxEnergy);
     }
 

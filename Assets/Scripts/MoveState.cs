@@ -1,6 +1,5 @@
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
-
 public class MoveState : Istate
 {
     FSM<TypeFSM> _fsm;
@@ -20,9 +19,27 @@ public class MoveState : Istate
     public void OnUpdate()
     {
         //MOVEMENT
-        AddForce(Seek(_hunter._boid.transform.position));
+        List<Boid> visibleBoids = _hunter.GetVisibleBoids();
 
-        _hunter.transform.position += _hunter._velocity * Time.deltaTime;
+        if (visibleBoids.Count == 0)
+        {
+            Vector3 nodePos = _hunter.path.GetNode(_hunter.currentNodeIndex).position;
+
+            AddForce(Seek(nodePos));
+            _hunter.transform.position += _hunter._velocity * Time.deltaTime;
+
+            float dist = Vector3.Distance(_hunter.transform.position, nodePos);
+            if (dist <= _hunter.nodeArrivalThreshold)
+            {
+                _hunter.currentNodeIndex++;
+                if (_hunter.currentNodeIndex >= _hunter.path.Length)
+                {
+                    _hunter.currentNodeIndex = 0;
+                }
+            }
+
+            return;
+        }
 
         //ENERGY
         if (_hunter.isTired)
@@ -30,12 +47,15 @@ public class MoveState : Istate
             _fsm.ChangeState(TypeFSM.Idle);
             return;
         }
-        _hunter.currentEnergy -= _hunter.energyDrainRate * Time.deltaTime;
+        _hunter.currentEnergy -= _hunter.energyDrain * Time.deltaTime;
         _hunter.currentEnergy = Mathf.Clamp(_hunter.currentEnergy, 0f, _hunter.maxEnergy);
     }
 
-    public void OnExit()
-    {}
+    public void AddForce(Vector3 dir)
+    {
+        _hunter._velocity = Vector3.ClampMagnitude(_hunter._velocity + dir, _hunter._maxVelocity);
+        _hunter.transform.forward = _hunter._velocity;
+    }
 
     public Vector3 Seek(Vector3 boid)
     {
@@ -49,15 +69,7 @@ public class MoveState : Istate
         return steering;
     }
 
-    public Vector3 Pursuit(Boid boid)
-    {
-        var dir = boid.transform.position + boid._velocity;
-        return Seek(dir);
-    }
 
-    public void AddForce(Vector3 dir)
-    {
-        _hunter._velocity = Vector3.ClampMagnitude(_hunter._velocity + dir, _hunter._maxVelocity);
-        _hunter.transform.forward = _hunter._velocity;
-    }
+    public void OnExit()
+    { }
 }
