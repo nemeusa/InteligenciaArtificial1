@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class FSM<T>
 {
@@ -31,6 +29,6 @@ public class FSM<T>
         _currentKey = newState;
         _CurrentState = _states[newState];
 
-        _CurrentState.OnEnter();
+        _CurrentState.OnEnter();    
     }
 }

@@ -1,21 +1,34 @@
-using System.Collections;
-using System.Collections.Generic;
-using TreeEditor;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 
 public class Hunter : MonoBehaviour
 {
     FSM<TypeFSM> _fsm;
-    TypeFSM _typeFSM;
 
-    Color _color;
+    [Header ("Energy")]
+    public float maxEnergy;
+    public float energyRecoveryRate; 
+    public float energyDrainRate;
+    [HideInInspector]
+    public float currentEnergy;
+    public bool isTired => currentEnergy <= 0f;
+
+    [Header ("Move")]
+    public float _maxVelocity;
+    [Range(0f, 1f)]
+    public float _maxForce;
+    public Boid _boid;
+    [HideInInspector]
+    public Vector3 _velocity;
+
 
     void Awake()
     {
         _fsm = new FSM<TypeFSM>();
 
-        _fsm.AddState(TypeFSM.Idle, new IdleState(_fsm));
-        _fsm.AddState(TypeFSM.Move, new MoveState());
+        _fsm.AddState(TypeFSM.Idle, new IdleState(_fsm, this));
+        _fsm.AddState(TypeFSM.Move, new MoveState(_fsm, this));
+        _fsm.AddState(TypeFSM.Pursuit, new PursuitState(_fsm, this));
 
         _fsm.ChangeState(TypeFSM.Idle);
     }
@@ -23,30 +36,12 @@ public class Hunter : MonoBehaviour
     void Update()
     {
         _fsm.Execute();
-        //if (_typeFSM == TypeFSM.Idle)
-        if (_fsm.CurrentStateKey == TypeFSM.Idle)
-        {
-            Debug.Log("toy azul xd");
-            _color = Color.blue;
-            OnColor();
-        }
-
-        if (_fsm.CurrentStateKey == TypeFSM.Move)
-        {
-            Debug.Log("toy rojo xd");
-            _color = Color.red;
-            OnColor();
-        }
-
-    }
-    public void OnColor()
-    {
-        GetComponent<Renderer>().material.color = _color;
     }
 }
 
 public enum TypeFSM
 {
     Idle,
-    Move
+    Move,
+    Pursuit
 }
