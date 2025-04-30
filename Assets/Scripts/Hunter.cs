@@ -1,6 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCounters;
 public class Hunter : MonoBehaviour
 {
     FSM<TypeFSM> _fsm;
@@ -9,7 +9,7 @@ public class Hunter : MonoBehaviour
     public float maxEnergy;
     public float energyRecovery; 
     public float energyDrain;
-    [HideInInspector] public float currentEnergy;
+     public float currentEnergy;
     public bool isTired => currentEnergy <= 0f;
 
     [Header ("Move")]
@@ -36,12 +36,14 @@ public class Hunter : MonoBehaviour
         _fsm.AddState(TypeFSM.Pursuit, new PursuitState(_fsm, this));
 
         _fsm.ChangeState(TypeFSM.Move);
+        currentEnergy = maxEnergy;
     }
 
     void Update()
     {
         _fsm.Execute();
         UpdateVision();
+        CheckBoidCollision();
     }
 
     public List<Boid> GetVisibleBoids()
@@ -82,6 +84,27 @@ public class Hunter : MonoBehaviour
                 if (angle <= viewAngle / 2f)
                 {
                     visibleBoids.Add(boid);
+                }
+            }
+        }
+    }
+
+    private void CheckBoidCollision()
+    {
+        if (_fsm.CurrentStateKey == TypeFSM.Pursuit)
+        {
+            var boids = GameManager.instance.boids.ToList();
+
+            foreach (var boid in boids)
+            {
+                if (boid == null) continue;
+
+                if (Vector3.Distance(transform.position, boid.transform.position) < 1.2f)
+                {
+                    GameManager.instance.boids.Remove(boid);
+                    boid.Kill();
+                    Debug.Log("eliminadoo");
+                    break;
                 }
             }
         }

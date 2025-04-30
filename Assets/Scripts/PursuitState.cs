@@ -16,7 +16,7 @@ public class PursuitState : Istate
     {
         Debug.Log("Enter to Pursuit");
         _hunter.GetComponent<Renderer>().material.color = Color.red;
-        _hunter.currentEnergy = _hunter.maxEnergy;
+        _hunter.currentEnergy = 50;
     }
     public void OnUpdate()
     {

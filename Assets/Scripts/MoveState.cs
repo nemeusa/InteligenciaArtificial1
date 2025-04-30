@@ -14,10 +14,20 @@ public class MoveState : Istate
     public void OnEnter()
     {
         _hunter.GetComponent<Renderer>().material.color = Color.yellow;
-        _hunter.currentEnergy = _hunter.maxEnergy;
+        
     }
     public void OnUpdate()
     {
+
+        //ENERGY
+        if (_hunter.isTired)
+        {
+            _fsm.ChangeState(TypeFSM.Idle);
+            return;
+        }
+        _hunter.currentEnergy -= _hunter.energyDrain * Time.deltaTime;
+        _hunter.currentEnergy = Mathf.Clamp(_hunter.currentEnergy, 0f, _hunter.maxEnergy);
+
         //PERSUIT
         if (_hunter.visibleBoids.Count > 0) _fsm.ChangeState(TypeFSM.Pursuit);
 
@@ -43,15 +53,6 @@ public class MoveState : Istate
 
             return;
         }
-
-        //ENERGY
-        if (_hunter.isTired)
-        {
-            _fsm.ChangeState(TypeFSM.Idle);
-            return;
-        }
-        _hunter.currentEnergy -= _hunter.energyDrain * Time.deltaTime;
-        _hunter.currentEnergy = Mathf.Clamp(_hunter.currentEnergy, 0f, _hunter.maxEnergy);
     }
 
     public void AddForce(Vector3 dir)

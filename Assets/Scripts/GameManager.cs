@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
-
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
@@ -14,7 +12,7 @@ public class GameManager : MonoBehaviour
 
     [Header ("Decisions")]
     public Transform hunter;
-    public List<Transform> foods = new List<Transform>();
+    public List<Transform> fruits = new List<Transform>();
 
     private void Awake()
     {
